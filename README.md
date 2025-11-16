@@ -10,7 +10,7 @@ Make a small code change, `git commit`, `git push` and then observe the GitHub A
 
 ### Configuring CI/CD
 
-Single Page Apps (SPAs) must bake env vars in at build time. This means they must be built to target a specific environment and must be rebuilt for different environments. The only env var in this base project is `VITE_API_BASE_URL` which must be set to point at the backend products web service. For the CI/CD build, this env var is currently set in the workflow file.
+Single Page Apps (SPAs) must bake env vars in at build time. This means they must be built to target a specific environment and must be rebuilt for different environments. The only env var in this base project is `VITE_API_BASE_URL` which must be set to point at the backend products web service. See the **Azure Setup** section below on configuring automated deployments to Azure.
 
 ## Local Setup
 
@@ -96,6 +96,32 @@ az functionapp cors add \
   --resource-group <your-resource-group> \
   --allowed-origins https://<app-store-endpoint>
 ```
+
+### Configure Automated Deployment
+
+1. Get the Connection String for your Storage Account:
+
+   ```bash
+   az storage account show-connection-string \
+   --name <productappstoragename> \
+   --resource-group <your-resource-group> \
+   --query connectionString \
+   --output tsv
+   ```
+
+2. Create a GitHub repo secret with the Connection String:
+
+   From the GitHub repo website: `Settings → Secrets and Variables → Actions → New Repository Secret`
+
+   Name the secret `AZURE_STORAGE_CONNECTION_STRING` and copy in the contents of the publishing profile from the previous step.
+
+3. Update the workflow with the base URL for your deployed Function App (backend service, e.g. a deployed version of `cis3039-example-cicd-svc`):
+
+   Modify `.github/workflows/build-and-deploy.yml` with the base url for your test environment's backend service.
+
+   Merge the changes into the main branch to become permenent.
+
+4. Make a small code change (e.g. some wording on a page), commit it and you should see the GitHub Action build and deploy to your test environment.
 
 ## How the project was made
 

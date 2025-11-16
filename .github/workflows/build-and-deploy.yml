@@ -1,0 +1,17 @@
+name: Build and Deploy to Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy_test:
+    name: Deploy to test
+    uses: ./.github/workflows/build-and-deploy-flow.yml
+    with:
+      apiBaseUrl: https://products-test-ab47-func.azurewebsites.net/api/ # should come from a repo environment variable
+    secrets:
+      storageConnectionString: ${{ secrets.TEST_AZURE_STORAGE_CONNECTION_STRING }}
