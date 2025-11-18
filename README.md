@@ -1,5 +1,7 @@
 # Frontend App CI/CD Example
 
+build example
+
 ## CI/CD Features
 
 This project includes a GitHub Actions workflow (`.github/workflows/build.yml`) to build the project. This would act as a Continuous Integration (CI) check to verify the latest code changes (git commit) have not broken the code base.
