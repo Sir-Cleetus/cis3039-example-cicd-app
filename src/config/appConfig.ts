@@ -1,3 +1,5 @@
+// Example commit
+
 export interface AppConfig {
   apiBaseUrl: string;
 }
