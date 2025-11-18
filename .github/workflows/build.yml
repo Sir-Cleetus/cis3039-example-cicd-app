@@ -1,10 +1,10 @@
-name: Build
+name: Build and Deploy to Test
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
-    branches: [main, develop]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      VITE_API_BASE_URL: http://localhost:7071/api/
+      VITE_API_BASE_URL: https://week-9-func-one.azurewebsites.net/api/ # Change to your deployed test backend
 
     steps:
       - name: Checkout code
@@ -35,3 +35,13 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Deploy to Azure Storage Static Website
+        uses: azure/CLI@v2
+        with:
+          inlineScript: |
+            az storage blob upload-batch \
+              --connection-string "${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" \
+              --destination '$web' \
+              --source dist \
+              --overwrite true
